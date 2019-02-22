@@ -11,21 +11,20 @@
 #include <string.h>
 
 #define clear "cls"
+
 #define true 1
 #define false 0
 
 typedef struct {
-    // 00.00.0000
-    char *date;
+    // 00.00.0000\0
+    char date[11];
 } Date;
 
 typedef struct {
-    
     int recordBookID;
     char *surname;
     Date entranceDate;
     float avgMark;
-    
 } Student;
 
 int isLeapYear(int year) {
@@ -91,6 +90,15 @@ float enterFloat(const char *message) {
     return ret;
 }
 
+char enterChar(const char *message) {
+    fflush(stdin);
+    fseek(stdin, 0, SEEK_END);
+    printf("%s", message);
+    
+    char ret = getchar();
+    return ret;
+}
+
 char * enterString(const char *message, int length) {
     
     char *ret = (char*)calloc(length, sizeof(char));
@@ -105,22 +113,20 @@ char * enterString(const char *message, int length) {
 }
 
 // Constructor function
-Date newDate(char *date) {
+Date newDate(char date[11]) {
     Date d;
-    d.date = (char*) calloc(11, sizeof(char));
     for (int i = 0; i < 11; i++) {
-        (d.date)[i] = date[i];
+        d.date[i] = date[i];
     }
-    
     return d;
 }
 
-// Constructor function
-Date enterDate() {
-    
+Date enterDate(const char *message) {
     int day = 0;
     int month = 0;
     int year = 0;
+    
+    printf("%s", message);
     
     do {
         fflush(stdin);
@@ -164,7 +170,6 @@ Date enterDate() {
     Date d = newDate(str);
     
     return d;
-    
 }
 
 // Constructor function
@@ -173,8 +178,7 @@ Student * newStudent() {
     
     student->recordBookID = enterInt("Enter student's record book ID: ");
     student->surname = enterString("Enter student's surname (Max 25 symbols): ", 26);
-    printf("Enter entrance date: \n");
-    student->entranceDate = enterDate();
+    student->entranceDate = enterDate("Enter entrance date: \n");
     student->avgMark = enterFloat("Enter student's avarage mark: ");
     
     return student;
@@ -189,7 +193,10 @@ void studentPrint(Student *student) {
     printf("======================================\n");
 }
 
-void handleStudentRemoval(int min, Student **group, int *length) {
+int handleStudentRemoval(int min, Student **group, int *length) {
+    
+    int count = 0;
+    
     for (int i = 0; i < *length; i++) {
         for (int j = i; j < *length; j++) {
             if (group[i]->recordBookID < group[j]->recordBookID) {
@@ -205,115 +212,122 @@ void handleStudentRemoval(int min, Student **group, int *length) {
             length[0]--;
             free(group[i]->surname);
             free(group[i]);
+            count++;
         }
     }
+    
+    return count;
+}
+
+int showMenu(int length) {
+    printf("Menu!\nAvailable students count: %d\n", length);
+    
+    printf("[0] Remove students with record book ID below than...\n");
+    printf("[1] Find student by surname...\n");
+    printf("[2] Show students...\n");
+    printf("[3] Exit program\n");
+    
+    int result = enterInt("# ");
+    
+    if (result > 3) {
+        return -1;
+    }
+    
+    return result;
 }
 
 int main(int argc, const char * argv[]) {
-    // int maxGroupSize = 255;
-    
     Student **group = (Student**)calloc(1, sizeof(Student*));
     
-    int i = 0;
+    int length = 0;
     do {
-        group[i] = newStudent();
+        group[length] = newStudent();
         
-        if (group[i] == NULL) {
+        if (group[length] == NULL) {
             printf("Error: Unable to allocate memory for student\n");
             break;
         }
         
-        i++;
+        length++;
         
-        group = (Student**)realloc(group, sizeof(Student*) * (i + 1));
+        group = (Student**)realloc(group, sizeof(Student*) * (length + 1));
         
         if (group == NULL) {
             printf("Error: Unable to reallocate group. Exiting program...\n");
             return 0;
         }
         
-        printf("Do you want to enter another student?\n'y' to enter, anything else to manage group!\n");
+        char confirm = enterChar("Do you want to enter another student?\n'y' to enter, anything else to manage group!\n");
         
-        fflush(stdin);
-        fseek(stdin, 0, SEEK_END);
-        char c = getchar();
-        fflush(stdin);
-        fseek(stdin, 0, SEEK_END);
-        
-        if (c != 'y') {
+        if (confirm != 'y') {
             break;
         }
         
     } while (1);
     
-    int length = i;
-    
-    
     // I'm tired of creating functions (._.)
     while (1) {
         
-        // Menu enter
-        printf("Menu!\nAvailable students: %d\n", length);
+        int result = showMenu(length);
+        if (result < 0) continue;
         
-        printf("[0] Remove students with record book ID below than...\n");
-        printf("[1] Find student by surname...\n");
-        printf("[2] Show students...\n");
-        printf("[3] Exit program\n");
-        
-        int result = enterInt("# ");
-        
-        if (result > 3) {
-            continue;
-        }
-        
-        // Menu handlering
-        if (result == 0) {
-            
-            // Removing students with record book ID below than value
-            
-            system(clear);
-            int value = enterInt("Enter record book ID: ");
-            handleStudentRemoval(value, group, &length);
-            group = (Student**)realloc(group, sizeof(Student*) * length);
-        }
-        else if (result == 1) {
-            // Search for student by surname
-            
-            system(clear);
-            
-            char *expected = enterString("Enter surname for search (Max 25 symbols): ", 26);
-            
-            int found = -1;
-            
-            for (int i = 0; i < length; i++) {
-                if (strcmp(group[i]->surname, expected) == false) {
-                    found = i;
+        switch(result) {
+            case 0: { // Remove students with record boot ID lower then value
+                system(clear);
+                
+                int value = enterInt("Enter record book ID: ");
+                int count = handleStudentRemoval(value, group, &length);
+                group = (Student**)realloc(group, sizeof(Student*) * length);
+                
+                if (group == NULL) {
+                    printf("Error: Unable to reallocate group. Exiting program...\n");
+                    return 0;
                 }
+                
+                printf("Removed %d students.\n", count);
+                enterChar("Press any button to get back to menul...");
+                break;
             }
             
-            if (found >= 0) {
-                printf("Found!\n");
-                studentPrint(group[found]);
-            }
-            else {
-                printf("Not found\n");
+            case 1: { // Find student by surname
+                system(clear);
+                char *expected = enterString("Enter surname for search (Max 25 symbols): ", 26);
+                
+                int found = -1;
+                for (int i = 0; i < length; i++) {
+                    if (strcmp(group[i]->surname, expected) == false) {
+                        found = i;
+                    }
+                }
+                
+                if (found >= 0) {
+                    printf("Found!\n");
+                    studentPrint(group[found]);
+                } else {
+                    printf("Not found\n");
+                }
+                
+                enterChar("Press any button to get back to menul...");
+                break;
             }
             
+            case 2: { // Display students
+                system(clear);
+                
+                printf("Students: \n");
+                for (int i = 0; i < length; i++) {
+                    studentPrint(group[i]);
+                }
+                
+                enterChar("Press any button to get back to menul...");
+                break;
+            }
+            case 3: {
+                printf("Exiting...");
+                enterChar("Goodby!");
+                return 0;
+            }
         }
-        else if (result == 2) {
-            
-            // Display all students
-            
-            for (int i = 0; i < length; i++) {
-                studentPrint(group[i]);
-            }
-        }
-        else if (result == 3) {
-            
-            // Exit
-            return 0;
-        }
-        
     }
     
     return 0;
