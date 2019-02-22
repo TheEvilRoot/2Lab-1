@@ -236,6 +236,15 @@ int showMenu(int length) {
     return result;
 }
 
+int findStudent(char *bySurname, Student **inGroup, int withLength) {
+    for (int i = 0; i < withLength; i++) {
+        if (strcmp(inGroup[i]->surname, bySurname) == false) {
+            return i;
+        }
+    }
+    return -1;
+}
+
 int main(int argc, const char * argv[]) {
     Student **group = (Student**)calloc(1, sizeof(Student*));
     
@@ -293,16 +302,11 @@ int main(int argc, const char * argv[]) {
                 system(clear);
                 char *expected = enterString("Enter surname for search (Max 25 symbols): ", 26);
                 
-                int found = -1;
-                for (int i = 0; i < length; i++) {
-                    if (strcmp(group[i]->surname, expected) == false) {
-                        found = i;
-                    }
-                }
+                int index = findStudent(expected, group, length);
                 
-                if (found >= 0) {
+                if (index >= 0) {
                     printf("Found!\n");
-                    studentPrint(group[found]);
+                    studentPrint(group[index]);
                 } else {
                     printf("Not found\n");
                 }
