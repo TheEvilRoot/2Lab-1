@@ -100,7 +100,6 @@ char enterChar(const char *message) {
 }
 
 char * enterString(const char *message, int length) {
-    
     char *ret = (char*)calloc(length, sizeof(char));
     
     printf("%s", message);
@@ -109,7 +108,6 @@ char * enterString(const char *message, int length) {
     fgets(ret, length, stdin);
     
     return ret;
-    
 }
 
 // Constructor function
@@ -194,7 +192,6 @@ void studentPrint(Student *student) {
 }
 
 int handleStudentRemoval(int min, Student **group, int *length) {
-    
     int count = 0;
     
     for (int i = 0; i < *length; i++) {
