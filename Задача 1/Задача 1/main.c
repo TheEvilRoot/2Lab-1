@@ -8,13 +8,13 @@
 
 #include <stdlib.h>
 #include <stdio.h>
-
-#define numBit (sizeof(int) * 8) - 2
+#define bitOffset 2
+#define bitCount (sizeof(int) * 8) - bitOffset
 
 // Never! Listen to me, NEVER divide numbers using bit fields in C...
 typedef struct {
-    unsigned int rem: 2;
-    unsigned int result: numBit;
+    unsigned int rem: bitOffset;
+    unsigned int result: bitCount;
 } BitField;
 
 // :DD
@@ -48,9 +48,9 @@ int main() {
         // It's a little bit simpler to do this with a bit shifting... Can I just?
         // printf("%d", number >> 2);
         // (00001000) >> 2 = (00000010)
-        printf("%d\n", sign * field->result);
+        printf("%d divided by 4 is %d\n", number, sign * field->result);
     } else {
-        printf("Number is not dividable by 4!\n");
+        printf("Number %d is not dividable by 4!\n", number);
     }
     
     fflush(stdin);
