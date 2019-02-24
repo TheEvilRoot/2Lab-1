@@ -72,7 +72,7 @@ Date enterDate(const char *message) {
         fseek(stdin, 0, SEEK_END);
         printf("Enter year: ");
         scanf("%d", &year);
-    } while (year < 1);
+    } while (year < 1 || year > 9999);
     
     do {
         fflush(stdin);
