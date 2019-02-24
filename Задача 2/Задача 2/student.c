@@ -43,24 +43,24 @@ int findStudent(char *bySurname, Student **inGroup, int withLength) {
     return -1;
 }
 
-int handleStudentRemoval(int min, Student **group, int *length) {
+int handleStudentRemoval(int min, Student ***group, int *length) {
     int count = 0;
     
     for (int i = 0; i < *length; i++) {
         for (int j = i; j < *length; j++) {
-            if (group[i]->recordBookID < group[j]->recordBookID) {
-                Student *buf = group[i];
-                group[i] = group[j];
-                group[j] = buf;
+            if ((*group)[i]->recordBookID < (*group)[j]->recordBookID) {
+                Student *buf = (*group)[i];
+                (*group)[i] = (*group)[j];
+                (*group)[j] = buf;
             }
         }
     }
     
     for (int i = *length - 1; i >= 0; i--) {
-        if (group[i]->recordBookID < min) {
+        if ((*group)[i]->recordBookID < min) {
             length[0]--;
-            free(group[i]->surname);
-            free(group[i]);
+            free((*group)[i]->surname);
+            free((*group)[i]);
             count++;
         }
     }

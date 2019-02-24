@@ -26,6 +26,6 @@ void studentPrint(Student*);
 
 int findStudent(char*, Student**, int);
 
-int handleStudentRemoval(int, Student**, int*);
+int handleStudentRemoval(int, Student***, int*);
 
 #endif /* student_h */

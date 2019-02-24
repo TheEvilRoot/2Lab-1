@@ -140,6 +140,40 @@ int showMenu(int length) {
     return result;
 }
 
+int menuRemoveStudents(Student ***group, int *length) {
+    int value = enterInt("Enter record book ID: ");
+    int count = handleStudentRemoval(value, group, length);
+    (*group) = (Student**)realloc((*group), sizeof(Student*) * (*length));
+    
+    if ((*group) == NULL) {
+        printf("Error: Unable to reallocate group. Exiting program...\n");
+        return 0;
+    }
+    
+    printf("Removed %d students.\n", count);
+    return 1;
+}
+
+void menuFindStudents(Student **group, int length) {
+    char *expected = enterString("Enter surname for search (Max 25 symbols): ", 26);
+    
+    int index = findStudent(expected, group, length);
+    
+    if (index >= 0) {
+        printf("Found!\n");
+        studentPrint(group[index]);
+    } else {
+        printf("Not found\n");
+    }
+}
+
+void menuDisplayStudents(Student **group, int length) {
+    printf("Students: \n");
+    for (int i = 0; i < length; i++) {
+        studentPrint(group[i]);
+    }
+}
+
 int main(int argc, const char * argv[]) {
     Student **group = (Student**)calloc(1, sizeof(Student*));
     
@@ -173,52 +207,26 @@ int main(int argc, const char * argv[]) {
     while (1) {
         
         int result = showMenu(length);
-        if (result < 0) continue;
+        if (result < 0) {
+            continue;
+        }
         
+        system(clear);
         switch(result) {
             case 0: { // Remove students with record boot ID lower then value
-                system(clear);
-                
-                int value = enterInt("Enter record book ID: ");
-                int count = handleStudentRemoval(value, group, &length);
-                group = (Student**)realloc(group, sizeof(Student*) * length);
-                
-                if (group == NULL) {
-                    printf("Error: Unable to reallocate group. Exiting program...\n");
+                if (!menuRemoveStudents(&group, &length)) {
                     return 0;
                 }
-                
-                printf("Removed %d students.\n", count);
-                enterChar("Press any button to get back to menu...");
                 break;
             }
             
             case 1: { // Find student by surname
-                system(clear);
-                char *expected = enterString("Enter surname for search (Max 25 symbols): ", 26);
-                
-                int index = findStudent(expected, group, length);
-                
-                if (index >= 0) {
-                    printf("Found!\n");
-                    studentPrint(group[index]);
-                } else {
-                    printf("Not found\n");
-                }
-                
-                enterChar("Press any button to get back to menu...");
+                menuFindStudents(group, length);
                 break;
             }
             
             case 2: { // Display students
-                system(clear);
-                
-                printf("Students: \n");
-                for (int i = 0; i < length; i++) {
-                    studentPrint(group[i]);
-                }
-                
-                enterChar("Press any button to get back to menu...");
+                menuDisplayStudents(group, length);
                 break;
             }
             case 3: {
@@ -227,6 +235,7 @@ int main(int argc, const char * argv[]) {
                 return 0;
             }
         }
+        enterChar("Press any button to get back to menu...");
     }
     
     return 0;
