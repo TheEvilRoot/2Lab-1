@@ -174,28 +174,27 @@ void menuDisplayStudents(Student **group, int length) {
     }
 }
 
-int main(int argc, const char * argv[]) {
-    Student **group = (Student**)calloc(1, sizeof(Student*));
-    
+int initGroup(Student ***group) {
     int length = 0;
+    
     do {
-        group[length] = enterStudent();
+        (*group)[length] = enterStudent();
         
-        if (group[length] == NULL) {
+        if ((*group)[length] == NULL) {
             printf("Error: Unable to allocate memory for student\n");
             break;
         }
         
         length++;
         
-        group = (Student**)realloc(group, sizeof(Student*) * (length + 1));
+        (*group) = (Student**)realloc((*group), sizeof(Student*) * (length + 1));
         
-        if (group == NULL) {
+        if ((*group) == NULL) {
             printf("Error: Unable to reallocate group. Exiting program...\n");
-            return 0;
+            return -1;
         }
         
-        char confirm = enterChar("Do you want to enter another student?\n'y' to enter, anything else to manage group!\n");
+        char confirm = enterChar("Do you want to enter another student?\n'y' to continue, anything else to manage group!\n");
         
         if (confirm != 'y') {
             break;
@@ -203,9 +202,19 @@ int main(int argc, const char * argv[]) {
         
     } while (1);
     
-    // I'm tired of creating functions (._.)
+    return length;
+}
+
+int main(int argc, const char * argv[]) {
+    Student **group = (Student**)calloc(1, sizeof(Student*));
+    
+    int length = initGroup(&group);
+    
+    if (length < 0) {
+        return 0;
+    }
+    
     while (1) {
-        
         int result = showMenu(length);
         if (result < 0) {
             continue;
@@ -237,7 +246,6 @@ int main(int argc, const char * argv[]) {
         }
         enterChar("Press any button to get back to menu...");
     }
-    
     return 0;
 }
 
