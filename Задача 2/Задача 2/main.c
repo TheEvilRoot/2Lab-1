@@ -189,7 +189,7 @@ int main(int argc, const char * argv[]) {
                 }
                 
                 printf("Removed %d students.\n", count);
-                enterChar("Press any button to get back to menul...");
+                enterChar("Press any button to get back to menu...");
                 break;
             }
             
@@ -206,7 +206,7 @@ int main(int argc, const char * argv[]) {
                     printf("Not found\n");
                 }
                 
-                enterChar("Press any button to get back to menul...");
+                enterChar("Press any button to get back to menu...");
                 break;
             }
             
@@ -218,7 +218,7 @@ int main(int argc, const char * argv[]) {
                     studentPrint(group[i]);
                 }
                 
-                enterChar("Press any button to get back to menul...");
+                enterChar("Press any button to get back to menu...");
                 break;
             }
             case 3: {
