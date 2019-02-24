@@ -22,7 +22,7 @@ typedef struct {
 
 int isLeapYear(int);
 
-int isValidDay(int, int, int);
+int getMaxDay(int, int);
 
 Date newDate(char[11]);
 

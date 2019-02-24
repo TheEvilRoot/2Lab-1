@@ -33,25 +33,13 @@ int isLeapYear(int year) {
     }
 }
 
-int isValidDay(int day, int month, int year) {
-    if (day < 1 || month < 1 || month > 12 || day > 31) {
-        return false;
-    }
-    
+int getMaxDay(int month, int year) {
     if (month == 2) {
         int maxDay = isLeapYear(year) ? 29 : 28;
-        
-        if (day > maxDay) {
-            return false;
-        }
+        return maxDay;
     } else {
         int maxDay = 28 + (month + month / 8) % 2 + 2 % month + 2 / month; // Dark magic
-        
-        if (day > maxDay) {
-            return false;
-        }
+        return maxDay;
     }
-    
-    return true;
 }
 

@@ -11,82 +11,17 @@
 
 #include "date.h"
 #include "student.h"
+#include "inputs.h"
 
-#define clear "clear"
-
-int enterInt(const char *message) {
-    int ret = -1;
-    
-    do {
-        fflush(stdin);
-        fseek(stdin, 0, SEEK_END);
-        printf("%s", message);
-    } while (!scanf("%d", &ret) || ret < 0);
-    
-    return ret;
-}
-
-float enterFloat(const char *message) {
-    float ret = -1;
-    
-    do {
-        fflush(stdin);
-        fseek(stdin, 0, SEEK_END);
-        printf("%s", message);
-        scanf("%f", &ret);
-    } while (ret < 0);
-    
-    return ret;
-}
-
-char enterChar(const char *message) {
-    printf("%s", message);
-    
-    fflush(stdin);
-    fseek(stdin, 0, SEEK_END);
-    char ret = getchar();
-    
-    return ret;
-}
-
-char * enterString(const char *message, int length) {
-    char *ret = (char*)calloc(length, sizeof(char));
-    
-    printf("%s", message);
-    fflush(stdin);
-    fseek(stdin, 0, SEEK_END);
-    fgets(ret, length, stdin);
-    
-    return ret;
-}
+#define clear ""
 
 Date enterDate(const char *message) {
-    int day = 0;
-    int month = 0;
-    int year = 0;
-    
+  
     printf("%s", message);
-    
-    do {
-        fflush(stdin);
-        fseek(stdin, 0, SEEK_END);
-        printf("Enter year: ");
-        scanf("%d", &year);
-    } while (year < 1 || year > 9999);
-    
-    do {
-        fflush(stdin);
-        fseek(stdin, 0, SEEK_END);
-        printf("Enter month: ");
-        scanf("%d", &month);
-    } while (month < 1 || month > 12);
-    
-    do {
-        fflush(stdin);
-        fseek(stdin, 0, SEEK_END);
-        printf("Enter day: ");
-        scanf("%d", &day);
-    } while (!isValidDay(day, month, year));
+  
+    enter(int, year, "Enter year: ", 1, 9999);
+    enter(int, month, "Enter month: ", 1, 12);
+    enter(int, day, "Enter day: ", 1, getMaxDay(month, year));
     
     char str[11];
     
@@ -112,11 +47,14 @@ Date enterDate(const char *message) {
 }
 
 Student * enterStudent() {
+    enter(int, recordBookID, "Enter student's record book ID: ");
+    enter(float, avgMark, "Enter student's avarage mark: ", 0);
+
     Student *student = newStudent(
-                enterInt("Enter student's record book ID: "),
-                enterString("Enter student's surname (Max 25 symbols): ", 26),
+                recordBookID,
+                enterString("Enter student's surname: ", '\n'),
                 enterDate("Enter entrance date: \n"),
-                enterFloat("Enter student's avarage mark: ")
+                avgMark
     );
     
     return student;
@@ -131,7 +69,7 @@ int showMenu(int length) {
     printf("[2] Show students...\n");
     printf("[3] Exit program\n");
     
-    int result = enterInt("# ");
+    enter(int, result, "# ", 0, 3);
     
     if (result > 3) {
         return -1;
@@ -141,7 +79,7 @@ int showMenu(int length) {
 }
 
 int menuRemoveStudents(Student ***group, int *length) {
-    int value = enterInt("Enter record book ID: ");
+    enter(int, value, "Enter record book ID: ");
     int count = handleStudentRemoval(value, group, length);
     (*group) = (Student**)realloc((*group), sizeof(Student*) * (*length));
     
@@ -155,7 +93,7 @@ int menuRemoveStudents(Student ***group, int *length) {
 }
 
 void menuFindStudents(Student **group, int length) {
-    char *expected = enterString("Enter surname for search (Max 25 symbols): ", 26);
+    char *expected = enterString("Enter surname for search: ", '\n');
     
     int index = findStudent(expected, group, length);
     
@@ -194,7 +132,7 @@ int initGroup(Student ***group) {
             return -1;
         }
         
-        char confirm = enterChar("Do you want to enter another student?\n'y' to continue, anything else to manage group!\n");
+        enter(char, confirm, "Do you want to enter another student?\n'y' to continue, anything else to manage group!\n");
         
         if (confirm != 'y') {
             break;
@@ -242,11 +180,11 @@ int main(int argc, const char * argv[]) {
             }
             case 3: {
                 printf("Exiting...");
-                enterChar("Goodby!");
+                enter(char, ___, "Goodby!");
                 return 0;
             }
         }
-        enterChar("Press any button to get back to menu...");
+        enter(char, ___,"Press any button to get back to menu...");
     }
     return 0;
 }
