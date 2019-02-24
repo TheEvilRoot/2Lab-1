@@ -43,8 +43,8 @@ int main() {
         number = -number;
     }
     
-    // (number >> 2) << 2 == 0 >>_<<
-    if (field->rem == 0) {
+    // (number >> 2) << 2 == number >>_<<
+    if (field->rem == 0) { 
         // It's a little bit simpler to do this with a bit shifting... Can I just?
         // printf("%d", number >> 2);
         // (00001000) >> 2 = (00000010)
