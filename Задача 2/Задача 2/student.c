@@ -28,9 +28,9 @@ Student * newStudent(int recordBookID, char *surname, Date entranceDate, float a
 void studentPrint(Student *student) {
     printf("======================================\n");
     printf("Student %s\n", student->surname);
-    printf("Record Book ID: %d\n", student->recordBookID);
-    printf("Entrance date: %s\n", student->entranceDate.date);
-    printf("Avarage Mark: %.2f\n", student->avgMark);
+    printf("Record Book ID:\t%d\n", student->recordBookID);
+    printf("Entrance date:\t%s\n", student->entranceDate.date);
+    printf("Avarage Mark:\t%.2f\n", student->avgMark);
     printf("======================================\n");
 }
 
