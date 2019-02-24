@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		695E2FFF22227D4900892D7C /* date.c in Sources */ = {isa = PBXBuildFile; fileRef = 695E2FFD22227D4900892D7C /* date.c */; };
+		695E300222227D5A00892D7C /* student.c in Sources */ = {isa = PBXBuildFile; fileRef = 695E300022227D5A00892D7C /* student.c */; };
 		69B77889221EF0A000D05177 /* main.c in Sources */ = {isa = PBXBuildFile; fileRef = 69B77888221EF0A000D05177 /* main.c */; };
 /* End PBXBuildFile section */
 
@@ -23,6 +25,10 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		695E2FFD22227D4900892D7C /* date.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = date.c; sourceTree = "<group>"; };
+		695E2FFE22227D4900892D7C /* date.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = date.h; sourceTree = "<group>"; };
+		695E300022227D5A00892D7C /* student.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = student.c; sourceTree = "<group>"; };
+		695E300122227D5A00892D7C /* student.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = student.h; sourceTree = "<group>"; };
 		69B77885221EF0A000D05177 /* Задача 2 */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = "Задача 2"; sourceTree = BUILT_PRODUCTS_DIR; };
 		69B77888221EF0A000D05177 /* main.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = main.c; sourceTree = "<group>"; };
 		69B7788F221EF0B000D05177 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
@@ -58,8 +64,12 @@
 		69B77887221EF0A000D05177 /* Задача 2 */ = {
 			isa = PBXGroup;
 			children = (
+				695E2FFD22227D4900892D7C /* date.c */,
+				695E2FFE22227D4900892D7C /* date.h */,
 				69B77888221EF0A000D05177 /* main.c */,
 				69B7788F221EF0B000D05177 /* README.md */,
+				695E300022227D5A00892D7C /* student.c */,
+				695E300122227D5A00892D7C /* student.h */,
 			);
 			path = "Задача 2";
 			sourceTree = "<group>";
@@ -122,6 +132,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				69B77889221EF0A000D05177 /* main.c in Sources */,
+				695E300222227D5A00892D7C /* student.c in Sources */,
+				695E2FFF22227D4900892D7C /* date.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

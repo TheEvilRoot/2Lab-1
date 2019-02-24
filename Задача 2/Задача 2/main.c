@@ -8,62 +8,11 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
+
+#include "date.h"
+#include "student.h"
 
 #define clear ""
-
-#define true 1
-#define false 0
-
-typedef struct {
-    // 00.00.0000\0
-    char date[11];
-} Date;
-
-typedef struct {
-    int recordBookID;
-    char *surname;
-    Date entranceDate;
-    float avgMark;
-} Student;
-
-int isLeapYear(int year) {
-    if (year % 4 == 0) {
-        if (year % 100 == 0) {
-            if (year % 400 == 0){
-                return true;
-            } else {
-                return false;
-            }
-        } else {
-            return true;
-        }
-    } else {
-        return false;
-    }
-}
-
-int isValidDay(int day, int month, int year) {
-    if (day < 1 || month < 1 || month > 12 || day > 31) {
-        return false;
-    }
-    
-    if (month == 2) {
-        int maxDay = isLeapYear(year) ? 29 : 28;
-        
-        if (day > maxDay) {
-            return false;
-        }
-    } else {
-        int maxDay = 28 + (month + month / 8) % 2 + 2 % month + 2 / month; // Dark magic
-        
-        if (day > maxDay) {
-            return false;
-        }
-    }
-    
-    return true;
-}
 
 int enterInt(const char *message) {
     int ret = -1;
@@ -91,11 +40,12 @@ float enterFloat(const char *message) {
 }
 
 char enterChar(const char *message) {
-    fflush(stdin);
-    fseek(stdin, 0, SEEK_END);
     printf("%s", message);
     
+    fflush(stdin);
+    fseek(stdin, 0, SEEK_END);
     char ret = getchar();
+    
     return ret;
 }
 
@@ -108,15 +58,6 @@ char * enterString(const char *message, int length) {
     fgets(ret, length, stdin);
     
     return ret;
-}
-
-// Constructor function
-Date newDate(char date[11]) {
-    Date d;
-    for (int i = 0; i < 11; i++) {
-        d.date[i] = date[i];
-    }
-    return d;
 }
 
 Date enterDate(const char *message) {
@@ -170,50 +111,16 @@ Date enterDate(const char *message) {
     return d;
 }
 
-// Constructor function
-Student * newStudent() {
-    Student *student = (Student*)malloc(sizeof(Student));
-    
-    student->recordBookID = enterInt("Enter student's record book ID: ");
-    student->surname = enterString("Enter student's surname (Max 25 symbols): ", 26);
-    student->entranceDate = enterDate("Enter entrance date: \n");
-    student->avgMark = enterFloat("Enter student's avarage mark: ");
+Student * enterStudent() {
+    Student *student = newStudent(
+                enterInt("Enter student's record book ID: "),
+                enterString("Enter student's surname (Max 25 symbols): ", 26),
+                enterDate("Enter entrance date: \n"),
+                enterFloat("Enter student's avarage mark: ")
+    );
     
     return student;
-}
 
-void studentPrint(Student *student) {
-    printf("======================================\n");
-    printf("Student %s\n", student->surname);
-    printf("Record Book ID: %d\n", student->recordBookID);
-    printf("Entrance date: %s\n", student->entranceDate.date);
-    printf("Avarage Mark: %.2f\n", student->avgMark);
-    printf("======================================\n");
-}
-
-int handleStudentRemoval(int min, Student **group, int *length) {
-    int count = 0;
-    
-    for (int i = 0; i < *length; i++) {
-        for (int j = i; j < *length; j++) {
-            if (group[i]->recordBookID < group[j]->recordBookID) {
-                Student *buf = group[i];
-                group[i] = group[j];
-                group[j] = buf;
-            }
-        }
-    }
-    
-    for (int i = *length - 1; i >= 0; i--) {
-        if (group[i]->recordBookID < min) {
-            length[0]--;
-            free(group[i]->surname);
-            free(group[i]);
-            count++;
-        }
-    }
-    
-    return count;
 }
 
 int showMenu(int length) {
@@ -233,21 +140,12 @@ int showMenu(int length) {
     return result;
 }
 
-int findStudent(char *bySurname, Student **inGroup, int withLength) {
-    for (int i = 0; i < withLength; i++) {
-        if (strcmp(inGroup[i]->surname, bySurname) == false) {
-            return i;
-        }
-    }
-    return -1;
-}
-
 int main(int argc, const char * argv[]) {
     Student **group = (Student**)calloc(1, sizeof(Student*));
     
     int length = 0;
     do {
-        group[length] = newStudent();
+        group[length] = enterStudent();
         
         if (group[length] == NULL) {
             printf("Error: Unable to allocate memory for student\n");
