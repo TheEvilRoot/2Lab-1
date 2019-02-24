@@ -12,7 +12,7 @@
 #include "date.h"
 #include "student.h"
 
-#define clear ""
+#define clear "clear"
 
 int enterInt(const char *message) {
     int ret = -1;
@@ -206,6 +206,8 @@ int initGroup(Student ***group) {
 }
 
 int main(int argc, const char * argv[]) {
+    system(clear);
+    
     Student **group = (Student**)calloc(1, sizeof(Student*));
     
     int length = initGroup(&group);
@@ -215,12 +217,12 @@ int main(int argc, const char * argv[]) {
     }
     
     while (1) {
+        system(clear);
         int result = showMenu(length);
         if (result < 0) {
             continue;
         }
         
-        system(clear);
         switch(result) {
             case 0: { // Remove students with record boot ID lower then value
                 if (!menuRemoveStudents(&group, &length)) {
